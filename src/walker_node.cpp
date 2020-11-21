@@ -7,7 +7,7 @@
  * @Author Loic Barret
  */
 
-#include "control.cpp"
+#include "../include/control.hpp"
 
 
 int main(int argc, char **argv) {
@@ -30,13 +30,11 @@ int main(int argc, char **argv) {
    * while loop that will drive the turtlebot around at the rate 
    * defined above until ros shuts down
    */
-  while (ros::ok())
-  {
+  while (ros::ok()) {
     turtlebot_control.solve();
     ros::spinOnce();
     loop_rate.sleep();
   }
 
   return 0;
-
 }

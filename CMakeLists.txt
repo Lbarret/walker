@@ -123,7 +123,6 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
-
 #############
 ## Install ##
 #############
@@ -145,7 +144,7 @@ include_directories(
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
 
-add_executable(walker_node src/walker_node.cpp)
+add_executable(walker_node src/walker_node.cpp src/control.cpp)
 
 target_link_libraries(walker_node ${catkin_LIBRARIES})
 

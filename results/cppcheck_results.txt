@@ -1,0 +1,6 @@
+lbarret@MatebookLB:~/catkin_ws/src$ cppcheck walker/
+Checking walker/src/control.cpp ...
+1/2 files checked 50% done
+Checking walker/src/walker_node.cpp ...
+2/2 files checked 100% done
+

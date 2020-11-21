@@ -1,0 +1,5 @@
+lbarret@MatebookLB:~/catkin_ws/src/walker$ cpplint $( find . -name \*.hpp -or -name \*.cpp | grep -vE -e "^./build/" -e "^./vendor/" -e "^./docs/" -e "^./results" )
+Done processing ./include/control.hpp
+Done processing ./src/control.cpp
+Done processing ./src/walker_node.cpp
+
