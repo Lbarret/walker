@@ -16,18 +16,20 @@
 #include <array>
 
 /**
- * The PIDController class has variables for each of the term as well as time
- * interval and error variables. It has the method to implement PID controller to achieve the
- * desired goal and methods to get the error variables and time interval.
+ * creates the control class
  */
 class control {
-	// Contains public data members
+/**
+ * contains public data members
+ */
 public:
 	control();
-	bool init();
+	void init();
 	void solve();
 	
-	// Contains private data members
+/**
+ * contains private data members
+ */ 
 private:
 	ros::NodeHandle nh;
 	ros::Publisher cmd_vel_pub;
