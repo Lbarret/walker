@@ -10,41 +10,59 @@
 // user defined header files for PID Controller
 #include "../include/control.hpp"
 
-// c++ header file
-#include <iostream>
 
 /**
  * @brief PID default constructor
  * @param none
  * @return none
  */
-control::control() { }
+control::control() { 
+	auto ret = init();
+}
 
-/**
- * @brief    PID parameterized constructor sets values of gains
- * @param[1] prop_gain, which is the proportional gain
- * @param[2] int_gain, which is the intgral gain
- * @param[3] diff_gain, which is the differential gain
- * @return 	 none
- */
-control::control(double prop_gain, double int_gain, double diff_gain){
-	kp = prop_gain;
-	ki = int_gain;
-	kd = diff_gain;
+bool control::init(){
+
+  cmd_vel_pub = nh.advertise<geometry_msgs::Twist>("cmd_vel", 10);
+  scan_sub = nh.subscribe("scan", 10, &control::scanCallback,this);
+
 }
-/**
- * @brief      Next three functions return values of kp, ki and kd
- * @param      none
- * @return     The propotional gain.
- * @return     The integral gain
- * @return     The differential gain
- */
-double control::GetKp() {
-	return kp;
+
+
+
+void control::updateCmdVel(double linear, double angular){
+  geometry_msgs::Twist cmd_vel_msg;
+  cmd_vel_msg.linear.x = linear;
+  cmd_vel_msg.angular.z = angular;
+
+  cmd_vel_pub.publish(cmd_vel_msg);
 }
-double control::GetKi() {
-	return ki;
+void control::scanCallback(const sensor_msgs::LaserScan::ConstPtr &msg){
+  std::array<int, 3> scan_angles = {0,30,330};
+  for (int i = 0; i < 3; i++){
+  	if (std::isinf(msg->ranges.at(scan_angles[i]))){
+  		scan_data[i] = msg->range_max;
+  	} else {
+  		scan_data[i] = msg->ranges.at(scan_angles[i]);
+  	}
+  }
 }
-double control::GetKd() {
-	return kd;
+
+
+void control::solve(){
+	double forward_clearance = .4;
+	double side_clearance = .3;
+	
+	if(scan_data[0] < forward_clearance){
+		if(scan_data[1] < scan_data[2]){
+			updateCmdVel(0,-1);
+		} else {
+			updateCmdVel(0,1);
+		}
+	} else if(scan_data[1] < side_clearance){
+		updateCmdVel(0,-1);
+	} else if(scan_data[2] < side_clearance){
+		updateCmdVel(0,1);
+	} else {
+		updateCmdVel(.2,0);
+	}
 }

@@ -10,6 +10,10 @@
 
 // c++ header file
 #include <iostream>
+#include <ros/ros.h>
+#include <sensor_msgs/LaserScan.h>
+#include <geometry_msgs/Twist.h>
+#include <array>
 
 /**
  * The PIDController class has variables for each of the term as well as time
@@ -20,11 +24,19 @@ class control {
 	// Contains public data members
 public:
 	control();
-	control(double prop_gain, double int_gain, double diff_gain);
-	double GetKp();
-	double GetKi();
-	double GetKd();
+	bool init();
+	void solve();
+	
 	// Contains private data members
 private:
-	double kp, ki, kd;
+	ros::NodeHandle nh;
+	ros::Publisher cmd_vel_pub;
+
+	ros::Subscriber scan_sub;
+
+    std::array<double, 3> scan_data = {0.0, 0.0, 0.0};
+
+    void updateCmdVel(double linear, double angular);
+    void scanCallback(const sensor_msgs::LaserScan::ConstPtr &msg);
+
 };
